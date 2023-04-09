@@ -98,17 +98,19 @@ public class WechatCallbackController {
         outMessage.setToUserName(inMessage.getFromUser());
         outMessage.setFromUserName(inMessage.getToUser());
         outMessage.setCreateTime(System.currentTimeMillis() / 1000L);
-        String content;
+        String result;
         try {
             // chatgpt问答接口
-            content = chatgptService.sendReply(inMessage.getContent());
+            log.info("chatgpt request: {}", inMessage.getContent());
+            result = chatgptService.sendReply(inMessage.getContent());
         } catch (Exception e) {
             log.error("sync chatgpt send and reply error，reason：{}", ExceptionUtils.getFullStackTrace(e));
             // 为发送者回复消息
-            content = "处理繁忙，请稍后再试 ... ";
+            result = "处理繁忙，请稍后再试 ... ";
         }
+        log.info("chatgpt response: {}", result);
         // 为发送者回复消息
-        outMessage.setContent(content);
+        outMessage.setContent(result);
         return outMessage;
     }
 
