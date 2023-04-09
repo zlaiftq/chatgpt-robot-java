@@ -1,0 +1,21 @@
+# Server
+server:
+  # 端口
+  port: 80
+# Spring
+spring:
+  application:
+    # 应用名称
+    name: chatgptRobot
+# 应用配置
+app:
+  # weixin
+  wx:
+    appId: 微信appid
+    secret: 微信secret
+    token: 微信token
+    aesKey: 微信aesKey
+  # chatgpt
+  chatgpt:
+    sk: chatgpt的sk
+    url: https://api.openai.com/v1/chat/completions
