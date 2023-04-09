@@ -8,6 +8,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * ChatgptServiceImpl.
@@ -28,6 +26,7 @@ import java.util.Map;
  * @date 2023/4/9 14:31.
  * @description chatgpt接口服务实现.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatgptServiceImpl implements ChatgptService {
@@ -57,6 +56,11 @@ public class ChatgptServiceImpl implements ChatgptService {
      */
     @Override
     public String sendReply(String message) throws Exception {
+        // 请求uuid
+        String requestUuid = UUID.randomUUID().toString();
+
+        log.info("requestUuid: {}, chatgpt -> request: {}", requestUuid, message);
+
         // 尝试从缓存中获取响应
         String response = CHAT_GPT_CACHE.getIfPresent(message);
 
@@ -115,6 +119,8 @@ public class ChatgptServiceImpl implements ChatgptService {
             // 响应加入缓存
             CHAT_GPT_CACHE.put(message, response);
         }
+
+        log.info("requestUuid: {}, chatgpt -> request: {}, response: {}", requestUuid, message, response);
 
         // 返回结果
         return response;

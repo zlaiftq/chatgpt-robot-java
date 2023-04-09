@@ -101,14 +101,12 @@ public class WechatCallbackController {
         String result;
         try {
             // chatgpt问答接口
-            log.info("chatgpt request: {}", inMessage.getContent());
             result = chatgptService.sendReply(inMessage.getContent());
         } catch (Exception e) {
             log.error("sync chatgpt send and reply error，reason：{}", ExceptionUtils.getFullStackTrace(e));
             // 为发送者回复消息
             result = "处理繁忙，请稍后再试 ... ";
         }
-        log.info("chatgpt response: {}", result);
         // 为发送者回复消息
         outMessage.setContent(result);
         return outMessage;

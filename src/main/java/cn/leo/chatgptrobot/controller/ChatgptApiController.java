@@ -48,13 +48,11 @@ public class ChatgptApiController {
         }
         String result;
         try {
-            log.info("chatgpt request: {}", context);
             result = chatgptService.sendReply(context);
         } catch (Exception e) {
             log.error("post chatgpt error, reason: {}", ExceptionUtils.getFullStackTrace(e));
             result = "post chatgpt error";
         }
-        log.info("chatgpt response: {}", result);
         return ResponseEntity.ok(result);
     }
 
