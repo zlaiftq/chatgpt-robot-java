@@ -8,6 +8,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * WechatConfiguration.
+ *
+ * @author zhanglei.
+ * @date 2023/4/9 13:43.
+ * @description 微信配置文件.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class WechatConfiguration {

@@ -15,6 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
+/**
+ * WechatCallbackController.
+ *
+ * @author zhanglei.
+ * @date 2023/4/9 13:17.
+ * @description 微信回调控制器.
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor

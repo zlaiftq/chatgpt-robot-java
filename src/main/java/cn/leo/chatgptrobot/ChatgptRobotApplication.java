@@ -18,18 +18,3 @@ public class ChatgptRobotApplication {
     }
 
 }
-/**
- * WechatMpConfiguration.
- *
- * @author zhanglei.
- * @date 2023/4/9 13:43.
- * @description TODO.
- */
-
-/**
- * WechatCallbackController.
- *
- * @author zhanglei.
- * @date 2023/4/9 13:17.
- * @description 微信回调控制器.
- */
