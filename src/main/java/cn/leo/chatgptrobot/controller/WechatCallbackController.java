@@ -12,6 +12,7 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlOutTextMessage;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
@@ -78,15 +79,41 @@ public class WechatCallbackController {
         // 消息处理
         WxMpXmlMessage inMessage = WxMpXmlMessage.fromXml(requestBody);
 
-        // 异步执行chatgpt问答接口
-        asyncHandleMessage(inMessage);
-
         // 返回结果
-        return syncHandleMessage(inMessage).toXml();
+        return Objects.requireNonNull(syncHandleMessage(inMessage)).toXml();
     }
 
     /**
-     * 异步消息处理
+     * 同步消息处理
+     *
+     * @param inMessage 消息内容
+     */
+    private WxMpXmlOutMessage syncHandleMessage(WxMpXmlMessage inMessage) {
+        // 入参
+        if (inMessage == null) {
+            log.error("async message handle param is null");
+            return null;
+        }
+        WxMpXmlOutTextMessage outMessage = new WxMpXmlOutTextMessage();
+        outMessage.setToUserName(inMessage.getFromUser());
+        outMessage.setFromUserName(inMessage.getToUser());
+        outMessage.setCreateTime(System.currentTimeMillis() / 1000L);
+        String content;
+        try {
+            // chatgpt问答接口
+            content = chatgptService.sendReply(inMessage.getContent());
+        } catch (Exception e) {
+            log.error("sync chatgpt send and reply error，reason：{}", ExceptionUtils.getFullStackTrace(e));
+            // 为发送者回复消息
+            content = "处理繁忙，请稍后再试 ... ";
+        }
+        // 为发送者回复消息
+        outMessage.setContent(content);
+        return outMessage;
+    }
+
+    /**
+     * 异步消息处理（使用客服接口异步回复，需要公众号进行微信认证）
      *
      * @param inMessage 消息内容
      */
@@ -119,12 +146,12 @@ public class WechatCallbackController {
     }
 
     /**
-     * 同步消息处理
+     * 等待消息处理（配合客服接口异步回复使用，同步立即返回）
      *
      * @param inMessage 消息内容
      * @return 消息结果
      */
-    private WxMpXmlOutMessage syncHandleMessage(WxMpXmlMessage inMessage) {
+    private WxMpXmlOutMessage waitHandleMessage(WxMpXmlMessage inMessage) {
         if (inMessage == null) {
             return null;
         }
