@@ -9,8 +9,8 @@ spring:
     name: chatgptRobot
 # 应用配置
 app:
-  # weixin
-  wx:
+  # 微信公众号
+  wx-mp:
     appId: 微信appid
     secret: 微信secret
     token: 微信token

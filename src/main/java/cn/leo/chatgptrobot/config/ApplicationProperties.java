@@ -18,7 +18,7 @@ public class ApplicationProperties {
 
     @Getter
     @Setter
-    private Wx wx = new Wx();
+    private WxMp wxMp = new WxMp();
 
     @Getter
     @Setter
@@ -26,7 +26,7 @@ public class ApplicationProperties {
 
     @Getter
     @Setter
-    public static class Wx {
+    public static class WxMp {
 
         private String appId;
 
