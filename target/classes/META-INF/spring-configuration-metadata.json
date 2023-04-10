@@ -1,0 +1,52 @@
+{
+  "groups": [
+    {
+      "name": "app",
+      "type": "cn.leo.chatgptrobot.config.ApplicationProperties",
+      "sourceType": "cn.leo.chatgptrobot.config.ApplicationProperties"
+    },
+    {
+      "name": "app.chatgpt",
+      "type": "cn.leo.chatgptrobot.config.ApplicationProperties$Chatgpt",
+      "sourceType": "cn.leo.chatgptrobot.config.ApplicationProperties"
+    },
+    {
+      "name": "app.wx",
+      "type": "cn.leo.chatgptrobot.config.ApplicationProperties$Wx",
+      "sourceType": "cn.leo.chatgptrobot.config.ApplicationProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "app.chatgpt.sk",
+      "type": "java.lang.String",
+      "sourceType": "cn.leo.chatgptrobot.config.ApplicationProperties$Chatgpt"
+    },
+    {
+      "name": "app.chatgpt.url",
+      "type": "java.lang.String",
+      "sourceType": "cn.leo.chatgptrobot.config.ApplicationProperties$Chatgpt"
+    },
+    {
+      "name": "app.wx.aes-key",
+      "type": "java.lang.String",
+      "sourceType": "cn.leo.chatgptrobot.config.ApplicationProperties$Wx"
+    },
+    {
+      "name": "app.wx.app-id",
+      "type": "java.lang.String",
+      "sourceType": "cn.leo.chatgptrobot.config.ApplicationProperties$Wx"
+    },
+    {
+      "name": "app.wx.secret",
+      "type": "java.lang.String",
+      "sourceType": "cn.leo.chatgptrobot.config.ApplicationProperties$Wx"
+    },
+    {
+      "name": "app.wx.token",
+      "type": "java.lang.String",
+      "sourceType": "cn.leo.chatgptrobot.config.ApplicationProperties$Wx"
+    }
+  ],
+  "hints": []
+}

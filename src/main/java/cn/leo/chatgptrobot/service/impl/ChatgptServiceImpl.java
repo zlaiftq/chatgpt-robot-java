@@ -61,6 +61,10 @@ public class ChatgptServiceImpl implements ChatgptService {
 
         log.info("requestUuid: {}, chatgpt -> request: {}", requestUuid, message);
 
+	if (StringUtils.isBlank(message)) {
+	    return "您好，我是AI助手Leo，谢谢您的关注！";
+	}
+
         // 尝试从缓存中获取响应
         String response = CHAT_GPT_CACHE.getIfPresent(message);
 
