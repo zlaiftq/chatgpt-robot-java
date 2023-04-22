@@ -82,7 +82,7 @@ public class ChatgptServiceImpl implements ChatgptService {
             if (StringUtils.isNotBlank(response)) {
                 return response;
             }
-            return "正在处理中，请稍等，可以重新提问相同的问题来获取回答！";
+            return "正在处理中，请稍等 ... \n\n提交相同的问题来获取回答！！！";
         }
 
         // 幂等缓存
