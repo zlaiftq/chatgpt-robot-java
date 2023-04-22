@@ -31,10 +31,10 @@ public class ChatgptApiController {
      * @return 响应结果
      */
     @PostMapping("/send-reply")
-    public ResponseEntity<?> sendReply(@RequestHeader("authorization") String authorization,
+    public ResponseEntity<?> sendReply(@RequestHeader("Authorization") String authorization,
                                        @RequestBody JSONObject reqBody) {
         if (StringUtils.isBlank(authorization)) {
-            return ResponseEntity.ok("authorization is null");
+            return ResponseEntity.ok("unauthorized");
         }
         if (!"zL9491Fh730oAdryvPAyJ1lVKVyoGOzMaF9vzRAL5V8".equals(authorization)) {
             return ResponseEntity.ok("unauthorized");
