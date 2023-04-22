@@ -37,9 +37,16 @@ public class ChatgptServiceImpl implements ChatgptService {
     private static final int CACHE_SIZE = 100;
 
     /**
-     * caffeine实现LRU缓存
+     * caffeine实现LRU缓存（数据缓存）
      */
     private static final Cache<String, String> CHAT_GPT_CACHE = Caffeine.newBuilder()
+            .maximumSize(CACHE_SIZE)
+            .build();
+
+    /**
+     * caffeine实现LRU缓存（幂等）
+     */
+    private static final Cache<String, String> CHAT_GPT_CACHE_IDEMPOTENT = Caffeine.newBuilder()
             .maximumSize(CACHE_SIZE)
             .build();
 
@@ -63,11 +70,23 @@ public class ChatgptServiceImpl implements ChatgptService {
         log.info("requestUuid: {}, chatgpt -> request: {}", requestUuid, message);
 
         if (StringUtils.isBlank(message)) {
-            return "您好，我是AI助手Leo，谢谢您的关注！";
+            return "您好，我是AI助手Leo，欢迎您的关注！";
         }
 
         // 尝试从缓存中获取响应
         String response = CHAT_GPT_CACHE.getIfPresent(message);
+
+        // 幂等缓存
+        String idempotent = CHAT_GPT_CACHE_IDEMPOTENT.getIfPresent(message);
+        if (StringUtils.isNotBlank(idempotent)) {
+            if (StringUtils.isNotBlank(response)) {
+                return response;
+            }
+            return "正在处理中，请稍等，可以重新提问相同的问题来获取回答！";
+        }
+
+        // 幂等缓存
+        CHAT_GPT_CACHE_IDEMPOTENT.put(message, message);
 
         // 从缓存中获取响应非空校验
         if (response == null) {
