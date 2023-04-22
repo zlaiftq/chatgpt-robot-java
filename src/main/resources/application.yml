@@ -6,7 +6,7 @@ server:
 spring:
   application:
     # 应用名称
-    name: chatgptRobot
+    name: chatgpt-robot
 # 应用配置
 app:
   # 微信公众号

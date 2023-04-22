@@ -52,18 +52,19 @@ public class ChatgptServiceImpl implements ChatgptService {
      * chatgpt问答接口
      *
      * @param message 消息
+     * @param gptSk gptSk
      * @return 回复
      */
     @Override
-    public String sendReply(String message) throws Exception {
+    public String sendReply(String message, String gptSk) throws Exception {
         // 请求uuid
         String requestUuid = UUID.randomUUID().toString();
 
         log.info("requestUuid: {}, chatgpt -> request: {}", requestUuid, message);
 
-	if (StringUtils.isBlank(message)) {
-	    return "您好，我是AI助手Leo，谢谢您的关注！";
-	}
+        if (StringUtils.isBlank(message)) {
+            return "您好，我是AI助手Leo，谢谢您的关注！";
+        }
 
         // 尝试从缓存中获取响应
         String response = CHAT_GPT_CACHE.getIfPresent(message);
@@ -73,7 +74,10 @@ public class ChatgptServiceImpl implements ChatgptService {
             // ChatGPT API URL
             String url = applicationProperties.getChatgpt().getUrl();
             // ChatGPT API Key
-            String apiKey = applicationProperties.getChatgpt().getSk();
+            String apiKey = gptSk;
+            if (StringUtils.isBlank(gptSk)) {
+                apiKey = applicationProperties.getChatgpt().getSk();
+            }
             // Request body
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("model", "gpt-3.5-turbo");

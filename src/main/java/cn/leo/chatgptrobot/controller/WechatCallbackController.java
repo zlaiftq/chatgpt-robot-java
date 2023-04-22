@@ -101,7 +101,7 @@ public class WechatCallbackController {
         String result;
         try {
             // chatgpt问答接口
-            result = chatgptService.sendReply(inMessage.getContent());
+            result = chatgptService.sendReply(inMessage.getContent(), null);
         } catch (Exception e) {
             log.error("sync chatgpt send and reply error，reason：{}", ExceptionUtils.getFullStackTrace(e));
             // 为发送者回复消息
@@ -127,7 +127,7 @@ public class WechatCallbackController {
                     throw new RuntimeException("async message handle param is null");
                 }
                 // chatgpt问答接口
-                String content = chatgptService.sendReply(inMessage.getContent());
+                String content = chatgptService.sendReply(inMessage.getContent(), null);
                 // 为发送者回复消息
                 wxMpService.getKefuService().sendKefuMessage(WxMpKefuMessage.TEXT()
                         .toUser(inMessage.getFromUser())

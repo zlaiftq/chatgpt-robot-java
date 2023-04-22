@@ -13,8 +13,9 @@ public interface ChatgptService {
      * chatgpt问答接口
      *
      * @param message 消息
+     * @param gptSk gptSk
      * @return 回复
      */
-    String sendReply(String message) throws Exception;
+    String sendReply(String message, String gptSk) throws Exception;
 
 }
