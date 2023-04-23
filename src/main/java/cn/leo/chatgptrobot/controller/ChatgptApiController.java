@@ -31,24 +31,22 @@ public class ChatgptApiController {
      * @return 响应结果
      */
     @PostMapping("/send-reply")
-    public ResponseEntity<?> sendReply(@RequestHeader("Authorization") String authorization,
-                                       @RequestBody JSONObject reqBody) {
+    public ResponseEntity<?> sendReply(@RequestHeader("Authorization") String authorization, @RequestHeader("Gpt-Sk") String gptSk, @RequestBody JSONObject reqBody) {
         if (StringUtils.isBlank(authorization)) {
             return ResponseEntity.ok("unauthorized");
         }
         if (!"zL9491Fh730oAdryvPAyJ1lVKVyoGOzMaF9vzRAL5V8".equals(authorization)) {
             return ResponseEntity.ok("unauthorized");
         }
-        if (reqBody == null) {
-            return ResponseEntity.ok("param is null");
+	if (StringUtils.isBlank(gptSk)) {
+	    return ResponseEntity.ok("unauthorized");
+	}
+	if (reqBody == null) {
+            return ResponseEntity.ok("request body is null");
         }
         String context = reqBody.getString("context");
         if (StringUtils.isBlank(context)) {
             return ResponseEntity.ok("context is blank");
-        }
-        String gptSk = reqBody.getString("gptSk");
-        if (StringUtils.isBlank(gptSk)) {
-            return ResponseEntity.ok("gptSk is blank");
         }
         String result;
         try {
