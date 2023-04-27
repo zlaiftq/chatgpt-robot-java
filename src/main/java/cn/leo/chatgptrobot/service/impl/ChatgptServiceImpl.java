@@ -142,10 +142,10 @@ public class ChatgptServiceImpl implements ChatgptService {
         String url = applicationProperties.getChatgpt().getUrl();
         // 请求uuid
         String requestUuid = UUID.randomUUID().toString();
-        log.info("requestUuid: {}, chatgpt -> request: {}", requestUuid, reqBody);
+        log.info("requestUuid: {}, chatgpt -> sk:{}, request: {}", requestUuid, gptSk, reqBody);
         // Send HTTP POST request to ChatGPT API
         String response = sendReq(url, gptSk, reqBody.toString());
-        log.info("requestUuid: {}, chatgpt -> request: {}, response: {}", requestUuid, reqBody, response);
+        log.info("requestUuid: {}, chatgpt -> sk:{}, request: {}, response: {}", requestUuid, gptSk, reqBody, response);
         return response;
     }
 
