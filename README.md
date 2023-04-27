@@ -6,7 +6,7 @@ chatgpt机器人-java版
 ##### 在使用这个功能时候，将[application.yml](src%2Fmain%2Fresources%2Fapplication.yml)文件中微信公众号和chatgpt的相关信息配置好，
 ##### 接下来对接微信公众号就可以了，此功能只支持一问一答，不支持上下文回答。
 #### 2）对外提供了chatgpt的api接口的转发，可以按照要求配置好chatgpt的信息，就可以调用了，支持上下文回答。
-#### 接口的主体请求参数为以下格式：
+##### 接口的主体请求参数为以下格式：
 示例：
 ```Json
         {
