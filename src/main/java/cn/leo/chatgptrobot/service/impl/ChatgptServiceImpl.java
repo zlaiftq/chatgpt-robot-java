@@ -11,10 +11,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -112,36 +114,7 @@ public class ChatgptServiceImpl implements ChatgptService {
             String requestBodyJson = gson.toJson(requestBody);
 
             // Send HTTP POST request to ChatGPT API
-            URL obj = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "application/json");
-            con.setRequestProperty("Authorization", "Bearer " + apiKey);
-            con.setDoOutput(true);
-            con.getOutputStream().write(requestBodyJson.getBytes(StandardCharsets.UTF_8));
-
-            // Read API response
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
-            StringBuilder responseBuilder = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) != null) {
-                responseBuilder.append(line);
-            }
-            in.close();
-
-            JSONObject jsonObject = JSONObject.parseObject(responseBuilder.toString());
-
-            JSONArray choices = jsonObject.getJSONArray("choices");
-
-            List<String> contentList = new ArrayList<>();
-            for (Object choice : choices) {
-                JSONObject choiceJson = JSONObject.parseObject(choice.toString());
-                JSONObject messageResult = choiceJson.getJSONObject("message");
-                String content = messageResult.getString("content");
-                contentList.add(content);
-            }
-
-            response = StringUtils.join(contentList, "^^^^^^");
+            response = sendReq(url, apiKey, requestBodyJson);
 
             // 响应加入缓存
             CHAT_GPT_CACHE.put(message, response);
@@ -151,6 +124,72 @@ public class ChatgptServiceImpl implements ChatgptService {
 
         // 返回结果
         return response;
+    }
+
+    /**
+     * chatgpt问答接口（支持上线文）
+     *
+     * @param reqBody 消息内容
+     * @param gptSk gptSk
+     * @return 回复
+     */
+    @Override
+    public String sendReply(JSONObject reqBody, String gptSk) throws Exception {
+        if (ObjectUtils.isEmpty(reqBody)) {
+            return "invalid parameter";
+        }
+        // ChatGPT API URL
+        String url = applicationProperties.getChatgpt().getUrl();
+        // 请求uuid
+        String requestUuid = UUID.randomUUID().toString();
+        log.info("requestUuid: {}, chatgpt -> request: {}", requestUuid, reqBody);
+        // Send HTTP POST request to ChatGPT API
+        String response = sendReq(url, gptSk, reqBody.toString());
+        log.info("requestUuid: {}, chatgpt -> request: {}, response: {}", requestUuid, reqBody, response);
+        return response;
+    }
+
+    /**
+     * 发送请求
+     *
+     * @param url 请求路径
+     * @param apiKey 秘钥key
+     * @param requestBodyJson 请求参数
+     * @return 响应结果
+     * @throws Exception 异常
+     */
+    private String sendReq(String url, String apiKey, String requestBodyJson) throws Exception {
+        // Send HTTP POST request to ChatGPT API
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json");
+        con.setRequestProperty("Authorization", "Bearer " + apiKey);
+        con.setDoOutput(true);
+        con.getOutputStream().write(requestBodyJson.getBytes(StandardCharsets.UTF_8));
+
+        // Read API response
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
+        StringBuilder responseBuilder = new StringBuilder();
+        String line;
+        while ((line = in.readLine()) != null) {
+            responseBuilder.append(line);
+        }
+        in.close();
+
+        JSONObject jsonObject = JSONObject.parseObject(responseBuilder.toString());
+
+        JSONArray choices = jsonObject.getJSONArray("choices");
+
+        List<String> contentList = new ArrayList<>();
+        for (Object choice : choices) {
+            JSONObject choiceJson = JSONObject.parseObject(choice.toString());
+            JSONObject messageResult = choiceJson.getJSONObject("message");
+            String content = messageResult.getString("content");
+            contentList.add(content);
+        }
+
+        return StringUtils.join(contentList, "^^^^^^");
     }
 
 }

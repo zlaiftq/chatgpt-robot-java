@@ -1,7 +1,7 @@
 package cn.leo.chatgptrobot.controller;
 
 import cn.leo.chatgptrobot.service.ChatgptService;
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -43,16 +43,9 @@ public class ChatgptApiController {
         if (StringUtils.isBlank(gptSk)) {
             return ResponseEntity.ok("unauthorized");
         }
-        if (reqBody == null) {
-            return ResponseEntity.ok("request body is null");
-        }
-        String context = reqBody.getString("context");
-        if (StringUtils.isBlank(context)) {
-            return ResponseEntity.ok("context is blank");
-        }
         String result;
         try {
-            result = chatgptService.sendReply(context, gptSk);
+            result = chatgptService.sendReply(reqBody, gptSk);
         } catch (Exception e) {
             log.error("post chatgpt error, reason: {}", ExceptionUtils.getFullStackTrace(e));
             result = "post chatgpt error";
