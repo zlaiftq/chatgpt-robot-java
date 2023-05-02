@@ -25,7 +25,7 @@ public class ChatgptApiController {
     private final ChatgptService chatgptService;
 
     /**
-     * chatgpt问答接口（简易版）
+     * chatgpt问答接口
      *
      * @param reqBody 请求体
      * @return 响应结果
