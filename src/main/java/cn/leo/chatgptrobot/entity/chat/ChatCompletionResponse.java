@@ -25,4 +25,5 @@ public class ChatCompletionResponse implements Serializable {
     private List<ChatChoice> choices;
 
     private Usage usage;
+
 }
