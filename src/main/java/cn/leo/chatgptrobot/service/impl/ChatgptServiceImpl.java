@@ -2,6 +2,7 @@ package cn.leo.chatgptrobot.service.impl;
 
 import cn.leo.chatgptrobot.config.ApplicationProperties;
 import cn.leo.chatgptrobot.service.ChatgptService;
+import cn.leo.chatgptrobot.utils.DataCounter;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -44,12 +45,12 @@ public class ChatgptServiceImpl implements ChatgptService {
             .maximumSize(CACHE_SIZE)
             .build();
 
-    /**
-     * caffeine实现LRU缓存（幂等）
-     */
-    private static final Cache<String, String> CHAT_GPT_CACHE_IDEMPOTENT = Caffeine.newBuilder()
-            .maximumSize(CACHE_SIZE)
-            .build();
+//    /**
+//     * caffeine实现LRU缓存（幂等）
+//     */
+//    private static final Cache<String, String> CHAT_GPT_CACHE_IDEMPOTENT = Caffeine.newBuilder()
+//            .maximumSize(CACHE_SIZE)
+//            .build();
 
     /**
      * 应用配置
@@ -76,18 +77,46 @@ public class ChatgptServiceImpl implements ChatgptService {
 
         // 尝试从缓存中获取响应
         String response = CHAT_GPT_CACHE.getIfPresent(message);
+        if (StringUtils.isNotBlank(response)) {
+            return response;
+        }
 
-        // 幂等缓存
-        String idempotent = CHAT_GPT_CACHE_IDEMPOTENT.getIfPresent(message);
-        if (StringUtils.isNotBlank(idempotent)) {
+        // 同一请求计数
+        int increment = DataCounter.increment(message);
+
+        // 同一请求计数判断
+        if (increment == 1) {
             if (StringUtils.isNotBlank(response)) {
                 return response;
             }
-            return "正在处理中，请稍等 ... \n\n提交相同的问题来获取回答！！！";
+        }
+        if (increment == 2) {
+            if (StringUtils.isNotBlank(response)) {
+                return response;
+            } else {
+                // 阻塞60s
+                Thread.sleep(60000);
+            }
+        }
+        if (increment == 3) {
+            if (StringUtils.isNotBlank(response)) {
+                return response;
+            } else {
+                return "正在处理中，请稍等 ... \n\n提交相同的问题来获取回答！！！";
+            }
         }
 
-        // 幂等缓存
-        CHAT_GPT_CACHE_IDEMPOTENT.put(message, message);
+//        // 幂等缓存
+//        String idempotent = CHAT_GPT_CACHE_IDEMPOTENT.getIfPresent(message);
+//        if (StringUtils.isNotBlank(idempotent)) {
+//            if (StringUtils.isNotBlank(response)) {
+//                return response;
+//            }
+//            return "正在处理中，请稍等 ... \n\n提交相同的问题来获取回答！！！";
+//        }
+//
+//        // 幂等缓存
+//        CHAT_GPT_CACHE_IDEMPOTENT.put(message, message);
 
         // 从缓存中获取响应非空校验
         if (response == null) {
