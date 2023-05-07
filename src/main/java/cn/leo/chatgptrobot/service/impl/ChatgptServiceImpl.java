@@ -1,5 +1,6 @@
 package cn.leo.chatgptrobot.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import cn.leo.chatgptrobot.config.ApplicationProperties;
 import cn.leo.chatgptrobot.service.ChatgptService;
 import cn.leo.chatgptrobot.utils.DataCounter;
@@ -146,6 +147,13 @@ public class ChatgptServiceImpl implements ChatgptService {
 
             // Send HTTP POST request to ChatGPT API
             response = sendReq(url, apiKey, requestBodyJson);
+
+            // 响应数据校验
+            if (StrUtil.isNotBlank(response)) {
+                if (response.length() > 2048) {
+                    response = response.substring(0, 2048);
+                }
+            }
 
             // 响应加入缓存
             CHAT_GPT_CACHE.put(message, response);
