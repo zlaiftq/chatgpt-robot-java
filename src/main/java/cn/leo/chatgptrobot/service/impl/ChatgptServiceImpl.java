@@ -101,6 +101,7 @@ public class ChatgptServiceImpl implements ChatgptService {
             // Request body
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("model", "gpt-3.5-turbo");
+            requestBody.put("max_tokens", "2048");
             List<Map<String, Object>> subList = new ArrayList<>();
             Map<String, Object> sub = new HashMap<>();
             sub.put("role", "user");
