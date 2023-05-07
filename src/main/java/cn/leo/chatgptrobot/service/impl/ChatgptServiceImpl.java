@@ -102,8 +102,8 @@ public class ChatgptServiceImpl implements ChatgptService {
             }
         }
         if (increment == 3) {
-            // 阻塞2s
-            Thread.sleep(2000);
+            // 阻塞3s
+            Thread.sleep(3000);
             if (StringUtils.isNotBlank(response)) {
                 return response;
             } else {
