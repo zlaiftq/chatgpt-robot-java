@@ -83,6 +83,7 @@ public class ChatgptServiceImpl implements ChatgptService {
 
         // 同一请求计数
         int increment = DataCounter.increment(message);
+        log.info("requestParam: {}, requestCount: {}", message, increment);
 
         // 同一请求计数判断
         if (increment == 1) {
@@ -96,6 +97,7 @@ public class ChatgptServiceImpl implements ChatgptService {
             } else {
                 // 阻塞60s
                 Thread.sleep(60000);
+                return "正在处理中，请稍等 ... \n\n提交相同的问题来获取回答！！！";
             }
         }
         if (increment == 3) {
